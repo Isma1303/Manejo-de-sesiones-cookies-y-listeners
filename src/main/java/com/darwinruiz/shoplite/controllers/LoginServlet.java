@@ -11,9 +11,6 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 
-/**
- * Requisito: autenticar, regenerar sesión y guardar auth, userEmail, role, TTL.
- */
 @WebServlet("/auth/login")
 public class LoginServlet extends HttpServlet {
     private final UserRepository users = new UserRepository();
@@ -21,37 +18,36 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String email = req.getParameter("email");
-        String pass = req.getParameter("password");
-        Optional<User> u = users.findByEmail(email);
+        String password = req.getParameter("password");
 
-        // Requisito:
-        //  - Si credenciales inválidas → redirect a login.jsp?err=1
-        //  - Si válidas → invalidar sesión previa, crear nueva y setear:
-        //      auth=true, userEmail, role, maxInactiveInterval (p.ej. 30 min)
-        //  - Redirigir a /home
+        // Verificar las credenciales usando UserRepository
+        Optional<User> userOpt = users.findByEmail(email);
 
-        if(u.isEmpty()) {
-            resp.sendRedirect(req.getContextPath() + "/login.jsp?err=1");
-            return;
-        }
-        User user = u.get();
-        if (!user.getPassword().equals(pass)) {
+        if (userOpt.isEmpty() || !userOpt.get().getPassword().equals(password)) {
+            // Si son inválidas, redirigir a login.jsp?err=1
             resp.sendRedirect(req.getContextPath() + "/login.jsp?err=1");
             return;
         }
 
+        User user = userOpt.get();
+
+        // Si son válidas:
+        // Invalidar la sesión anterior
         HttpSession oldSession = req.getSession(false);
         if (oldSession != null) {
             oldSession.invalidate();
         }
 
-        HttpSession newSession = req.getSession(true);
-        newSession.setAttribute("auth", true);
-        newSession.setAttribute("userEmail", user.getEmail());
-        newSession.setAttribute("role", user.getRole());
-        newSession.setMaxInactiveInterval(30 * 60);
+        // Crear una nueva sesión y asignar atributos
+        HttpSession session = req.getSession(true);
+        session.setAttribute("auth", true);
+        session.setAttribute("userEmail", user.getEmail());
+        session.setAttribute("role", user.getRole());
 
+        // Configurar maxInactiveInterval a 30 minutos
+        session.setMaxInactiveInterval(30 * 60); // 30 minutos en segundos
 
+        // Redirigir a /home
         resp.sendRedirect(req.getContextPath() + "/home");
     }
 }

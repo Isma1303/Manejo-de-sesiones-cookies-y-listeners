@@ -18,17 +18,18 @@ public class HomeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        List<Product> all = repo.findAll();
 
         // Requisito:
-        //  - Implementar paginación por query (?page, ?size) con defaults razonables.
-        //  - Enviar a la JSP:
-        //      items -> sublista de productos
-        //      page, size, total -> para controles de navegación
+        // - Implementar paginación por query (?page, ?size) con defaults razonables.
+        // - Enviar a la JSP:
+        // items -> sublista de productos
+        // page, size, total -> para controles de navegación
+
+        List<Product> all = repo.findAll();
 
         Integer page = req.getParameter("page") != null ? Integer.parseInt(req.getParameter("page")) : 1;
         Integer size = req.getParameter("size") != null ? Integer.parseInt(req.getParameter("size")) : 3;
-        Integer total  = all.size();
+        Integer total = all.size();
         List<Product> items = all.stream().skip((page - 1) * size).limit(size).collect(Collectors.toList());
 
         req.setAttribute("items", items);

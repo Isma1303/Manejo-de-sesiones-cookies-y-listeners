@@ -25,11 +25,11 @@
             <form method="post" action="${pageContext.request.contextPath}/auth/login" class="row g-3">
                 <div class="col-12">
                     <label class="form-label">Email</label>
-                    <input class="form-control" name="email" value="admin@demo.com" required>
+                    <input class="form-control" name="email" required>
                 </div>
                 <div class="col-12">
                     <label class="form-label">Contraseña</label>
-                    <input class="form-control" type="password" name="password" value="admin123" required>
+                    <input class="form-control" type="password" name="password" required>
                 </div>
                 <div class="col-12 d-flex gap-2">
                     <button class="btn btn-primary">Entrar</button>

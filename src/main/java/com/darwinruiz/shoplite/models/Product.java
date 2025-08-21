@@ -5,16 +5,25 @@ public class Product {
     private String name;
     private double price;
     private String imageUrl;
+    private int stock;
 
-
-
-    public Product(long id, String name, double price, String imageUrl) {
+    // Constructor completo
+    public Product(long id, String name, double price, String imageUrl, int stock) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.stock = stock;
     }
 
+    // Constructor simplificado (para compatibilidad)
+
+    // Constructor para nuevos productos
+    public Product(String name, double price, String imageUrl, int stock) {
+        this(0, name, price, imageUrl, stock);
+    }
+
+    // Getters
     public long getId() {
         return id;
     }
@@ -31,6 +40,11 @@ public class Product {
         return imageUrl;
     }
 
+    public int getStock() {
+        return stock;
+    }
+
+    // Setters
     public void setId(long id) {
         this.id = id;
     }
@@ -42,7 +56,13 @@ public class Product {
     public void setPrice(double price) {
         this.price = price;
     }
+
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
 }
